@@ -37,34 +37,25 @@ struct ContentView: View {
 
         NavigationView{
             List{
-                Section(header: HStack{
-                    Image(systemName: "wand.and.rays")
-                    Text("Developement")
-                }.font(.title3)){
+                Section(header: GoalSectionHeader(symbolSystemName: "command.circle", headerText: "Developement")){
                     
                     ForEach(goalsDev, id: \.self, content: {
                         goal in
-                        NavigationLink(goal, destination: Text(goal))
+                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
                     })
                 }
                 
-                Section(header: HStack{
-                    Image(systemName: "dial.high")
-                    Text("Architect")
-                }.font(.title3)){
+                Section(header: GoalSectionHeader(symbolSystemName: "eject", headerText: "Architect")){
                     ForEach(goalArch, id: \.self, content: {
                         goal in
-                        NavigationLink(goal, destination: Text(goal))
+                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
                     })
                 }
                
-                Section(header: HStack{
-                    Image(systemName: "hourglass.bottomhalf.filled")
-                    Text("Beginner")
-                }.font(.title3)){
+                Section(header: GoalSectionHeader(symbolSystemName: "keyboard", headerText: "Beginner")){
                     ForEach(goalBasics, id: \.self, content: {
                         goal in
-                        NavigationLink(goal, destination: Text(goal))
+                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
                     })
                 }
             }.listStyle(GroupedListStyle()).navigationTitle("Home")
@@ -75,5 +66,27 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct GoalSectionHeader: View {
+    var symbolSystemName: String
+    var headerText : String
+    var body: some View {
+        HStack(alignment: .center){
+            Image(systemName: symbolSystemName)
+            Text(headerText)
+        }.font(.title3)
+    }
+}
+
+struct DetailsView: View {
+    var goal_title: String
+    var body: some View {
+        VStack{
+            Text(goal_title)
+            Text("Placeholder for description")
+            Text("Placeholder for mark complete button")
+        }
     }
 }
