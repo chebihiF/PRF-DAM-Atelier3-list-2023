@@ -80,13 +80,4 @@ struct GoalSectionHeader: View {
     }
 }
 
-struct DetailsView: View {
-    var goal_title: String
-    var body: some View {
-        VStack{
-            Text(goal_title)
-            Text("Placeholder for description")
-            Text("Placeholder for mark complete button")
-        }
-    }
-}
+
