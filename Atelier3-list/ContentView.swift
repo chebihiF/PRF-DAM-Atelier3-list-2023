@@ -35,37 +35,39 @@ let goalBasics = [
 struct ContentView: View {
     var body: some View {
 
-        List{
-            Section(header: HStack{
-                Image(systemName: "wand.and.rays")
-                Text("Developement")
-            }.font(.title3)){
+        NavigationView{
+            List{
+                Section(header: HStack{
+                    Image(systemName: "wand.and.rays")
+                    Text("Developement")
+                }.font(.title3)){
+                    
+                    ForEach(goalsDev, id: \.self, content: {
+                        goal in
+                        NavigationLink(goal, destination: Text(goal))
+                    })
+                }
                 
-                ForEach(goalsDev, id: \.self, content: {
-                    goal in
-                    Text(goal)
-                })
-            }
-            
-            Section(header: HStack{
-                Image(systemName: "dial.high")
-                Text("Architect")
-            }.font(.title3)){
-                ForEach(goalArch, id: \.self, content: {
-                    goal in
-                    Text(goal)
-                })
-            }
-           
-            Section(header: HStack{
-                Image(systemName: "hourglass.bottomhalf.filled")
-                Text("Beginner")
-            }.font(.title3)){
-                ForEach(goalBasics, id: \.self, content: {
-                    goal in
-                    Text(goal)
-                })
-            }
+                Section(header: HStack{
+                    Image(systemName: "dial.high")
+                    Text("Architect")
+                }.font(.title3)){
+                    ForEach(goalArch, id: \.self, content: {
+                        goal in
+                        NavigationLink(goal, destination: Text(goal))
+                    })
+                }
+               
+                Section(header: HStack{
+                    Image(systemName: "hourglass.bottomhalf.filled")
+                    Text("Beginner")
+                }.font(.title3)){
+                    ForEach(goalBasics, id: \.self, content: {
+                        goal in
+                        NavigationLink(goal, destination: Text(goal))
+                    })
+                }
+            }.listStyle(GroupedListStyle()).navigationTitle("Home")
         }
     }
 }
