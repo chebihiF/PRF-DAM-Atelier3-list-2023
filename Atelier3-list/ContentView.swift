@@ -7,55 +7,31 @@
 
 import SwiftUI
 
-let goalsDev = [
-    "Lear Java OOP",
-    "Lear Android",
-    "Learn IOS",
-    "Learn React",
-    "Learn Docker",
-    "Learn Kubernetes",
-]
-
-let goalArch = [
-    "Learn DevOps",
-    "Learn Agil",
-    "Learn Scrum",
-    "Learn Lean",
-    "Lear ITIL"
-]
-
-let goalBasics = [
-    "Algorithme",
-    "C langage",
-    "Python",
-    "OOP",
-    "DataBase"
-]
-
 struct ContentView: View {
+    @ObservedObject var goaltask: GoalTask
     var body: some View {
 
         NavigationView{
             List{
                 Section(header: GoalSectionHeader(symbolSystemName: "command.circle", headerText: "Developement")){
                     
-                    ForEach(goalsDev, id: \.self, content: {
-                        goal in
-                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
+                    ForEach(goaltask.goalsDev, content: {
+                        task in
+                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
                     })
                 }
                 
                 Section(header: GoalSectionHeader(symbolSystemName: "eject", headerText: "Architect")){
-                    ForEach(goalArch, id: \.self, content: {
-                        goal in
-                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
+                    ForEach(goaltask.goalArch, content: {
+                        task in
+                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
                     })
                 }
                
                 Section(header: GoalSectionHeader(symbolSystemName: "keyboard", headerText: "Beginner")){
-                    ForEach(goalBasics, id: \.self, content: {
-                        goal in
-                        NavigationLink(goal, destination: DetailsView(goal_title: goal))
+                    ForEach(goaltask.goalBasics,  content: {
+                        task in
+                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
                     })
                 }
             }.listStyle(GroupedListStyle()).navigationTitle("Home")
@@ -65,7 +41,9 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let goalTask = GoalTask()
+        ContentView(goaltask: goalTask)
+        TaskRow(task: Task(name: "Test", isComplete: false)).previewLayout(.fixed(width: 300, height: 70))
     }
 }
 
@@ -80,4 +58,24 @@ struct GoalSectionHeader: View {
     }
 }
 
-
+struct TaskRow: View {
+    let task: Task
+    var body: some View {
+        VStack {
+            if(task.isComplete){
+                HStack{
+                    Image(systemName: "checkmark.square")
+                    Text(task.name)
+                        .foregroundColor(.gray)
+                        .strikethrough()
+                }
+            }else{
+                HStack{
+                    Image(systemName: "square")
+                    Text(task.name)
+                }
+            }
+            
+        }
+    }
+}
