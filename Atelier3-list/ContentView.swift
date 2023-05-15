@@ -5,37 +5,119 @@
 //  Created by CHEBIHI FAYCAL on 10/5/2023.
 //
 
-import SwiftUI
+import SwiftUI 
 
 struct ContentView: View {
+    
     @ObservedObject var goaltask: GoalTask
+    @State private var focuseModeOn = false
+    @State private var resetAlertShowing = false
+    
     var body: some View {
 
-        NavigationView{
-            List{
+        NavigationView {
+            List {
                 Section(header: GoalSectionHeader(symbolSystemName: "command.circle", headerText: "Developement")){
                     
-                    ForEach(goaltask.goalsDev, content: {
-                        task in
-                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
+                    let taskIndices = goaltask.goalsDev.indices
+                    let tasks = goaltask.goalsDev
+                    let taskIndexPairs = Array(zip(tasks, taskIndices))
+                    
+                    ForEach(taskIndexPairs, id:\.0.id, content: {
+                        task, taskIndice in
+                        
+                        let goalsDevTaskWrapper = $goaltask
+                        let taskBinding = goalsDevTaskWrapper.goalsDev
+                        let theTaskBinding = taskBinding[taskIndice]
+                        
+                        if !focuseModeOn || (focuseModeOn && task.isComplete == false){
+                            
+                            NavigationLink(destination: DetailsView(goal: theTaskBinding), label: {TaskRow(task: task)})
+                        }
+                    }).onDelete(perform: { indexSet in
+                        goaltask.goalsDev.remove(atOffsets: indexSet)
+                    }).onMove(perform: {indices, newOffset in
+                        goaltask.goalsDev.move(fromOffsets: indices, toOffset: newOffset)
                     })
                 }
-                
+              
                 Section(header: GoalSectionHeader(symbolSystemName: "eject", headerText: "Architect")){
-                    ForEach(goaltask.goalArch, content: {
-                        task in
-                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
+                    
+                    let taskIndices = goaltask.goalArch.indices
+                    let tasks = goaltask.goalArch
+                    let taskIndexPairs = Array(zip(tasks, taskIndices))
+                    
+                    ForEach(taskIndexPairs, id:\.0.id, content: {
+                        task, taskIndice in
+                        
+                        let goalsArchTaskWrapper = $goaltask
+                        let taskBinding = goalsArchTaskWrapper.goalArch
+                        let theTaskBinding = taskBinding[taskIndice]
+                        
+                        if !focuseModeOn || (focuseModeOn && task.isComplete == false){
+                            
+                            NavigationLink(destination: DetailsView(goal: theTaskBinding), label: {TaskRow(task: task)})
+                        }
+                    }).onDelete(perform: { indexSet in
+                        goaltask.goalArch.remove(atOffsets: indexSet)
+                    }).onMove(perform: {indices, newOffset in
+                        goaltask.goalArch.move(fromOffsets: indices, toOffset: newOffset)
                     })
                 }
                
                 Section(header: GoalSectionHeader(symbolSystemName: "keyboard", headerText: "Beginner")){
-                    ForEach(goaltask.goalBasics,  content: {
-                        task in
-                        NavigationLink(destination: DetailsView(goal: task), label: {TaskRow(task: task)})
+                    
+                    let taskIndices = goaltask.goalBasics.indices
+                    let tasks = goaltask.goalBasics
+                    let taskIndexPairs = Array(zip(tasks, taskIndices))
+                    
+                    ForEach(taskIndexPairs, id:\.0.id, content: {
+                        task, taskIndice in
+                        
+                        let goalsBasicTaskWrapper = $goaltask
+                        let taskBinding = goalsBasicTaskWrapper.goalBasics
+                        let theTaskBinding = taskBinding[taskIndice]
+                        
+                        if !focuseModeOn || (focuseModeOn && task.isComplete == false){
+                            
+                            NavigationLink(destination: DetailsView(goal: theTaskBinding), label: {TaskRow(task: task)})
+                        }
+                    }).onDelete(perform: { indexSet in
+                        goaltask.goalBasics.remove(atOffsets: indexSet)
+                    }).onMove(perform: {indices, newOffset in
+                        goaltask.goalBasics.move(fromOffsets: indices, toOffset: newOffset)
                     })
                 }
-            }.listStyle(GroupedListStyle()).navigationTitle("Home")
-        }
+            }
+            .listStyle(GroupedListStyle())
+            .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading){
+                    EditButton()
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing){
+                    Button("Reset") {
+                        resetAlertShowing = true
+                    }
+                }
+                
+                ToolbarItem(placement: .bottomBar){
+                    Toggle(isOn: $focuseModeOn, label: {
+                        Text("Focus Mode")
+                    }).toggleStyle(.switch)
+                }
+            }
+        }.alert(isPresented: $resetAlertShowing, content: {
+            Alert(title: Text("Reset List"), message: Text("Are you sure ?"),
+                  primaryButton: .cancel(),
+                  secondaryButton:.destructive(Text("Yes, reset it"), action: {
+                let refreshedGoalTasks = GoalTask()
+                self.goaltask.goalsDev = refreshedGoalTasks.goalsDev
+                self.goaltask.goalArch = refreshedGoalTasks.goalArch
+                self.goaltask.goalBasics = refreshedGoalTasks.goalBasics
+            }))
+        })
     }
 }
 

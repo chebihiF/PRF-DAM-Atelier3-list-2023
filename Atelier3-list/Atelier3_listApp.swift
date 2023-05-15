@@ -15,7 +15,7 @@ struct Atelier3_listApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(goaltask: goalTask)
-                .environmentObject(goalTask)
+              
         }
     }
 }
